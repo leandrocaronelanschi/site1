@@ -1,0 +1,1629 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LEDS — Cursos de Programação</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --blue: #1a4fa0;
+        --red: #c0391b;
+        --green: #3a8c1e;
+        --dark: #111214;
+        --mid: #1e2025;
+        --card: #24272e;
+        --border: rgba(255, 255, 255, 0.07);
+        --text: #e8eaed;
+        --muted: #8a8f9a;
+        --white: #ffffff;
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        background: var(--dark);
+        color: var(--text);
+        font-family: "Arial", sans-serif;
+        font-weight: 300;
+        line-height: 1.6;
+        overflow-x: hidden;
+      }
+
+      /* ── NOISE OVERLAY ── */
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+        pointer-events: none;
+        z-index: 1000;
+        opacity: 0.5;
+      }
+
+      /* ── NAV ── */
+      nav {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 900;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 18px 6vw;
+        background: rgba(17, 18, 20, 0.85);
+        backdrop-filter: blur(18px);
+        border-bottom: 1px solid var(--border);
+      }
+
+      .nav-logo img {
+        height: 44px;
+      }
+
+      .nav-links {
+        display: flex;
+        gap: 36px;
+        list-style: none;
+      }
+      .nav-links a {
+        color: var(--muted);
+        text-decoration: none;
+        font-family: "Arial", sans-serif;
+        font-size: 13px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        transition: color 0.2s;
+      }
+      .nav-links a:hover {
+        color: var(--white);
+      }
+
+      .nav-cta {
+        background: var(--blue);
+        color: var(--white);
+        padding: 10px 24px;
+        border-radius: 6px;
+        font-family: "Arial", sans-serif;
+        font-size: 13px;
+        font-weight: 600;
+        text-decoration: none;
+        letter-spacing: 0.05em;
+        transition:
+          background 0.2s,
+          transform 0.15s;
+      }
+      .nav-cta:hover {
+        background: #2160c4;
+        transform: translateY(-1px);
+      }
+
+      /* ── HERO ── */
+      .hero {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 140px 6vw 80px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      /* Gradient orbs */
+      .hero::after {
+        content: "";
+        position: absolute;
+        top: -80px;
+        right: -120px;
+        width: 700px;
+        height: 700px;
+        border-radius: 50%;
+        background: radial-gradient(
+          circle,
+          rgba(26, 79, 160, 0.18) 0%,
+          transparent 70%
+        );
+        pointer-events: none;
+      }
+      .orb-green {
+        position: absolute;
+        bottom: -100px;
+        left: -60px;
+        width: 500px;
+        height: 500px;
+        border-radius: 50%;
+        background: radial-gradient(
+          circle,
+          rgba(58, 140, 30, 0.12) 0%,
+          transparent 70%
+        );
+        pointer-events: none;
+      }
+      .orb-red {
+        position: absolute;
+        top: 40%;
+        left: 30%;
+        width: 300px;
+        height: 300px;
+        border-radius: 50%;
+        background: radial-gradient(
+          circle,
+          rgba(192, 57, 27, 0.08) 0%,
+          transparent 70%
+        );
+        pointer-events: none;
+      }
+
+      .hero-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(26, 79, 160, 0.15);
+        border: 1px solid rgba(26, 79, 160, 0.3);
+        color: #6fa3e8;
+        padding: 6px 16px;
+        border-radius: 999px;
+        font-size: 12px;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        font-family: "Arial", sans-serif;
+        font-weight: 600;
+        width: fit-content;
+        margin-bottom: 32px;
+        animation: fadeUp 0.6s ease both;
+      }
+      .hero-label span {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: #6fa3e8;
+        animation: pulse 2s infinite;
+      }
+
+      .hero h1 {
+        font-family: "Arial", sans-serif;
+        font-size: clamp(42px, 7vw, 88px);
+        font-weight: 800;
+        line-height: 1.02;
+        letter-spacing: -0.02em;
+        max-width: 900px;
+        animation: fadeUp 0.7s 0.1s ease both;
+      }
+
+      .hero h1 .accent-blue {
+        color: #4a8fe8;
+      }
+      .hero h1 .accent-green {
+        color: #5db83e;
+      }
+
+      .hero-sub {
+        margin-top: 28px;
+        max-width: 560px;
+        font-size: 18px;
+        color: var(--muted);
+        line-height: 1.7;
+        animation: fadeUp 0.7s 0.2s ease both;
+      }
+
+      .hero-actions {
+        display: flex;
+        gap: 16px;
+        align-items: center;
+        margin-top: 44px;
+        flex-wrap: wrap;
+        animation: fadeUp 0.7s 0.3s ease both;
+      }
+
+      .btn-primary {
+        background: var(--blue);
+        color: var(--white);
+        padding: 15px 36px;
+        border-radius: 8px;
+        font-family: "Arial", sans-serif;
+        font-size: 15px;
+        font-weight: 700;
+        text-decoration: none;
+        letter-spacing: 0.04em;
+        transition:
+          background 0.2s,
+          transform 0.15s,
+          box-shadow 0.2s;
+        box-shadow: 0 4px 20px rgba(26, 79, 160, 0.35);
+      }
+      .btn-primary:hover {
+        background: #2160c4;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 30px rgba(26, 79, 160, 0.5);
+      }
+
+      .btn-ghost {
+        color: var(--text);
+        padding: 15px 28px;
+        border-radius: 8px;
+        font-family: "Arial", sans-serif;
+        font-size: 15px;
+        font-weight: 600;
+        text-decoration: none;
+        border: 1px solid var(--border);
+        transition:
+          border-color 0.2s,
+          color 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .btn-ghost:hover {
+        border-color: rgba(255, 255, 255, 0.2);
+        color: var(--white);
+      }
+      .btn-ghost svg {
+        transition: transform 0.2s;
+      }
+      .btn-ghost:hover svg {
+        transform: translateX(3px);
+      }
+
+      .hero-stats {
+        display: flex;
+        gap: 48px;
+        margin-top: 72px;
+        flex-wrap: wrap;
+        animation: fadeUp 0.7s 0.4s ease both;
+      }
+      .stat-item {
+      }
+      .stat-num {
+        font-family: "Arial", sans-serif;
+        font-size: 36px;
+        font-weight: 800;
+        line-height: 1;
+        background: linear-gradient(135deg, var(--white), var(--muted));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+      .stat-label {
+        font-size: 13px;
+        color: var(--muted);
+        margin-top: 4px;
+        letter-spacing: 0.03em;
+      }
+
+      /* ── LOGOS BELT ── */
+      .belt {
+        border-top: 1px solid var(--border);
+        border-bottom: 1px solid var(--border);
+        padding: 20px 6vw;
+        display: flex;
+        align-items: center;
+        gap: 48px;
+        overflow: hidden;
+        background: var(--mid);
+      }
+      .belt-label {
+        font-size: 11px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--muted);
+        white-space: nowrap;
+        font-family: "Arial", sans-serif;
+      }
+      .belt-items {
+        display: flex;
+        gap: 48px;
+        align-items: center;
+        animation: scroll 20s linear infinite;
+        white-space: nowrap;
+      }
+      .belt-item {
+        font-family: "Arial", sans-serif;
+        font-size: 14px;
+        color: var(--muted);
+        font-weight: 600;
+        letter-spacing: 0.05em;
+        opacity: 0.6;
+      }
+
+      /* ── SECTIONS ── */
+      section {
+        padding: 100px 6vw;
+      }
+
+      .section-tag {
+        display: inline-block;
+        font-family: "Arial", sans-serif;
+        font-size: 11px;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-bottom: 16px;
+      }
+
+      .section-title {
+        font-family: "Arial", sans-serif;
+        font-size: clamp(28px, 4vw, 48px);
+        font-weight: 800;
+        line-height: 1.1;
+        letter-spacing: -0.02em;
+        max-width: 600px;
+      }
+
+      .section-sub {
+        margin-top: 16px;
+        max-width: 520px;
+        font-size: 16px;
+        color: var(--muted);
+        line-height: 1.7;
+      }
+
+      /* ── CURSOS ── */
+      #cursos {
+        background: var(--mid);
+      }
+
+      .cursos-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        margin-bottom: 60px;
+        flex-wrap: wrap;
+        gap: 24px;
+      }
+
+      .courses-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 24px;
+      }
+
+      .course-card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        overflow: hidden;
+        transition:
+          transform 0.2s,
+          box-shadow 0.2s,
+          border-color 0.2s;
+        position: relative;
+      }
+      .course-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 16px 48px rgba(0, 0, 0, 0.4);
+        border-color: rgba(255, 255, 255, 0.14);
+      }
+
+      .card-banner {
+        height: 8px;
+      }
+      .card-banner.blue {
+        background: linear-gradient(90deg, var(--blue), #4a8fe8);
+      }
+      .card-banner.green {
+        background: linear-gradient(90deg, var(--green), #5db83e);
+      }
+      .card-banner.red {
+        background: linear-gradient(90deg, var(--red), #e05535);
+      }
+
+      .card-body {
+        padding: 28px;
+      }
+
+      .card-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+        margin-bottom: 18px;
+      }
+      .card-icon.blue {
+        background: rgba(26, 79, 160, 0.18);
+      }
+      .card-icon.green {
+        background: rgba(58, 140, 30, 0.18);
+      }
+      .card-icon.red {
+        background: rgba(192, 57, 27, 0.18);
+      }
+
+      .card-level {
+        font-size: 10px;
+        font-family: "Arial", sans-serif;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-bottom: 10px;
+      }
+
+      .card-title {
+        font-family: "Arial", sans-serif;
+        font-size: 18px;
+        font-weight: 700;
+        line-height: 1.25;
+        margin-bottom: 10px;
+      }
+      .card-desc {
+        font-size: 14px;
+        color: var(--muted);
+        line-height: 1.6;
+        margin-bottom: 24px;
+      }
+
+      .card-meta {
+        display: flex;
+        gap: 16px;
+        font-size: 12px;
+        color: var(--muted);
+        border-top: 1px solid var(--border);
+        padding-top: 18px;
+        margin-bottom: 20px;
+      }
+      .card-meta span {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+
+      .card-cta {
+        display: block;
+        text-align: center;
+        padding: 11px;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        font-family: "Arial", sans-serif;
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--text);
+        text-decoration: none;
+        transition:
+          background 0.2s,
+          border-color 0.2s;
+      }
+      .card-cta:hover {
+        background: rgba(255, 255, 255, 0.06);
+        border-color: rgba(255, 255, 255, 0.15);
+      }
+      .card-featured .card-cta {
+        background: var(--blue);
+        border-color: var(--blue);
+        color: #fff;
+      }
+      .card-featured .card-cta:hover {
+        background: #2160c4;
+      }
+
+      .badge-new {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        background: var(--green);
+        color: #fff;
+        font-size: 10px;
+        font-family: "Arial", sans-serif;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        padding: 3px 10px;
+        border-radius: 999px;
+      }
+
+      /* ── TRILHAS ── */
+      .trilhas-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 24px;
+        margin-top: 60px;
+      }
+
+      .trilha-card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 36px;
+        display: flex;
+        gap: 28px;
+        align-items: flex-start;
+        transition:
+          transform 0.2s,
+          border-color 0.2s;
+      }
+      .trilha-card:hover {
+        transform: translateY(-3px);
+        border-color: rgba(255, 255, 255, 0.14);
+      }
+
+      .trilha-num {
+        font-family: "Arial", sans-serif;
+        font-size: 52px;
+        font-weight: 800;
+        line-height: 1;
+        opacity: 0.08;
+        min-width: 60px;
+      }
+
+      .trilha-content h3 {
+        font-family: "Arial", sans-serif;
+        font-size: 20px;
+        font-weight: 700;
+        margin-bottom: 10px;
+      }
+      .trilha-content p {
+        font-size: 14px;
+        color: var(--muted);
+        line-height: 1.65;
+        margin-bottom: 16px;
+      }
+      .trilha-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      .tag {
+        font-size: 11px;
+        font-family: "Arial", sans-serif;
+        letter-spacing: 0.05em;
+        padding: 4px 12px;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        color: var(--muted);
+      }
+
+      /* ── COMO FUNCIONA ── */
+      #como-funciona {
+        background: var(--dark);
+      }
+      .steps {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 32px;
+        margin-top: 60px;
+      }
+
+      .step {
+        position: relative;
+      }
+      .step::after {
+        content: "→";
+        position: absolute;
+        right: -20px;
+        top: 22px;
+        color: var(--border);
+        font-size: 20px;
+      }
+      .step:last-child::after {
+        display: none;
+      }
+
+      .step-num {
+        font-family: "Arial", sans-serif;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.15em;
+        color: var(--muted);
+        margin-bottom: 16px;
+      }
+      .step-title {
+        font-family: "Arial", sans-serif;
+        font-size: 18px;
+        font-weight: 700;
+        margin-bottom: 10px;
+      }
+      .step-desc {
+        font-size: 14px;
+        color: var(--muted);
+        line-height: 1.65;
+      }
+
+      .step-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+        margin-bottom: 20px;
+        background: var(--card);
+      }
+
+      /* ── DEPOIMENTOS ── */
+      #depoimentos {
+        background: var(--mid);
+      }
+      .depo-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 24px;
+        margin-top: 60px;
+      }
+
+      .depo-card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 32px;
+        transition: transform 0.2s;
+      }
+      .depo-card:hover {
+        transform: translateY(-3px);
+      }
+
+      .depo-stars {
+        color: #f0b429;
+        font-size: 14px;
+        margin-bottom: 16px;
+      }
+      .depo-text {
+        font-size: 15px;
+        line-height: 1.7;
+        color: var(--text);
+        margin-bottom: 24px;
+        font-style: italic;
+      }
+
+      .depo-author {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .depo-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "Arial", sans-serif;
+        font-weight: 700;
+        font-size: 15px;
+        color: #fff;
+      }
+      .depo-name {
+        font-family: "Arial", sans-serif;
+        font-size: 14px;
+        font-weight: 700;
+      }
+      .depo-role {
+        font-size: 12px;
+        color: var(--muted);
+      }
+
+      /* ── CTA BANNER ── */
+      .cta-banner {
+        background: linear-gradient(135deg, var(--blue) 0%, #0d3575 100%);
+        margin: 0 6vw;
+        border-radius: 20px;
+        padding: 80px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 40px;
+        position: relative;
+        overflow: hidden;
+      }
+      .cta-banner::before {
+        content: "";
+        position: absolute;
+        right: -60px;
+        top: -60px;
+        width: 320px;
+        height: 320px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.04);
+      }
+      .cta-banner::after {
+        content: "";
+        position: absolute;
+        right: 80px;
+        bottom: -80px;
+        width: 200px;
+        height: 200px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.04);
+      }
+
+      .cta-text h2 {
+        font-family: "Arial", sans-serif;
+        font-size: clamp(24px, 3vw, 40px);
+        font-weight: 800;
+        line-height: 1.2;
+      }
+      .cta-text p {
+        margin-top: 12px;
+        font-size: 16px;
+        opacity: 0.75;
+        max-width: 460px;
+      }
+
+      .btn-white {
+        background: var(--white);
+        color: var(--blue);
+        padding: 16px 40px;
+        border-radius: 8px;
+        font-family: "Arial", sans-serif;
+        font-size: 15px;
+        font-weight: 700;
+        text-decoration: none;
+        white-space: nowrap;
+        transition:
+          transform 0.2s,
+          box-shadow 0.2s;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+      }
+      .btn-white:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      }
+
+      /* ── FAQ ── */
+      #faq {
+        background: var(--dark);
+      }
+      .faq-wrap {
+        max-width: 720px;
+        margin: 60px auto 0;
+      }
+
+      .faq-item {
+        border-bottom: 1px solid var(--border);
+        padding: 24px 0;
+      }
+      .faq-q {
+        font-family: "Arial", sans-serif;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        user-select: none;
+      }
+      .faq-q .icon {
+        font-size: 20px;
+        color: var(--muted);
+        transition: transform 0.25s;
+      }
+      .faq-a {
+        font-size: 14px;
+        color: var(--muted);
+        line-height: 1.7;
+        max-height: 0;
+        overflow: hidden;
+        transition:
+          max-height 0.3s ease,
+          margin-top 0.3s;
+      }
+      .faq-item.open .faq-a {
+        max-height: 200px;
+        margin-top: 14px;
+      }
+      .faq-item.open .icon {
+        transform: rotate(45deg);
+      }
+
+      /* ── FOOTER ── */
+      footer {
+        background: var(--mid);
+        border-top: 1px solid var(--border);
+        padding: 72px 6vw 36px;
+      }
+
+      .footer-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr 1fr;
+        gap: 48px;
+        margin-bottom: 60px;
+      }
+
+      .footer-brand img {
+        height: 40px;
+        margin-bottom: 20px;
+      }
+      .footer-brand p {
+        font-size: 14px;
+        color: var(--muted);
+        line-height: 1.65;
+        max-width: 280px;
+      }
+
+      .footer-col h4 {
+        font-family: "Arial", sans-serif;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-bottom: 20px;
+      }
+      .footer-col ul {
+        list-style: none;
+      }
+      .footer-col li {
+        margin-bottom: 10px;
+      }
+      .footer-col a {
+        color: var(--muted);
+        text-decoration: none;
+        font-size: 14px;
+        transition: color 0.2s;
+      }
+      .footer-col a:hover {
+        color: var(--white);
+      }
+
+      .footer-bottom {
+        border-top: 1px solid var(--border);
+        padding-top: 28px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 13px;
+        color: var(--muted);
+        flex-wrap: wrap;
+        gap: 16px;
+      }
+
+      .footer-social {
+        display: flex;
+        gap: 16px;
+      }
+      .social-btn {
+        width: 36px;
+        height: 36px;
+        border-radius: 8px;
+        border: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--muted);
+        text-decoration: none;
+        font-size: 14px;
+        transition:
+          border-color 0.2s,
+          color 0.2s;
+      }
+      .social-btn:hover {
+        border-color: rgba(255, 255, 255, 0.2);
+        color: var(--white);
+      }
+
+      /* ── ANIMATIONS ── */
+      @keyframes fadeUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.4;
+        }
+      }
+      @keyframes scroll {
+        from {
+          transform: translateX(0);
+        }
+        to {
+          transform: translateX(-50%);
+        }
+      }
+
+      .fade-in {
+        opacity: 0;
+        transform: translateY(24px);
+        transition:
+          opacity 0.6s ease,
+          transform 0.6s ease;
+      }
+      .fade-in.visible {
+        opacity: 1;
+        transform: none;
+      }
+
+      /* ── RESPONSIVE ── */
+      @media (max-width: 900px) {
+        .steps {
+          grid-template-columns: 1fr 1fr;
+        }
+        .step::after {
+          display: none;
+        }
+        .trilhas-grid {
+          grid-template-columns: 1fr;
+        }
+        .depo-grid {
+          grid-template-columns: 1fr;
+        }
+        .footer-grid {
+          grid-template-columns: 1fr 1fr;
+        }
+        .cta-banner {
+          flex-direction: column;
+          text-align: center;
+          padding: 48px 36px;
+        }
+        .nav-links {
+          display: none;
+        }
+      }
+
+      @media (max-width: 600px) {
+        .steps {
+          grid-template-columns: 1fr;
+        }
+        .footer-grid {
+          grid-template-columns: 1fr;
+        }
+        .hero-stats {
+          gap: 32px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- NAV -->
+    <nav>
+      <a href="#" class="nav-logo">
+        <img src="/mnt/user-data/uploads/logo_leds_2.jpg" alt="LEDS" />
+      </a>
+      <ul class="nav-links">
+        <li><a href="#cursos">Cursos</a></li>
+        <li><a href="#trilhas">Trilhas</a></li>
+        <li><a href="#como-funciona">Como Funciona</a></li>
+        <li><a href="#depoimentos">Depoimentos</a></li>
+        <li><a href="#faq">FAQ</a></li>
+      </ul>
+      <a href="#cursos" class="nav-cta">Começar Agora</a>
+    </nav>
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="orb-green"></div>
+      <div class="orb-red"></div>
+
+      <div class="hero-label"><span></span> Novas turmas abertas — 2025</div>
+
+      <h1>
+        Aprenda a<br />
+        <span class="accent-blue">programar</span> de<br />
+        verdade.<span class="accent-green">_</span>
+      </h1>
+
+      <p class="hero-sub">
+        Cursos práticos e orientados a projetos reais. Do zero à carreira, com
+        mentoria de profissionais do
+        <strong>Laboratório de Extensão em Desenvolvimento de Soluções</strong>.
+      </p>
+
+      <div class="hero-actions">
+        <a href="#cursos" class="btn-primary">Ver todos os cursos</a>
+        <a href="#como-funciona" class="btn-ghost">
+          Como funciona
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path
+              d="M3 8h10M9 4l4 4-4 4"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </a>
+      </div>
+
+      <div class="hero-stats">
+        <div class="stat-item">
+          <div class="stat-num">1.200+</div>
+          <div class="stat-label">Alunos formados</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num">32</div>
+          <div class="stat-label">Cursos disponíveis</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num">98%</div>
+          <div class="stat-label">Taxa de aprovação</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num">4.9★</div>
+          <div class="stat-label">Avaliação média</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BELT -->
+    <div class="belt">
+      <span class="belt-label">Tecnologias</span>
+      <div class="belt-items">
+        <span class="belt-item">Python</span>
+        <span class="belt-item">JavaScript</span>
+        <span class="belt-item">React</span>
+        <span class="belt-item">Node.js</span>
+        <span class="belt-item">Java</span>
+        <span class="belt-item">SQL</span>
+        <span class="belt-item">Git</span>
+        <span class="belt-item">Docker</span>
+        <span class="belt-item">AWS</span>
+        <span class="belt-item">TypeScript</span>
+        <span class="belt-item">Django</span>
+        <span class="belt-item">Flutter</span>
+        <!-- duplicated for loop -->
+        <span class="belt-item">Python</span>
+        <span class="belt-item">JavaScript</span>
+        <span class="belt-item">React</span>
+        <span class="belt-item">Node.js</span>
+        <span class="belt-item">Java</span>
+        <span class="belt-item">SQL</span>
+        <span class="belt-item">Git</span>
+        <span class="belt-item">Docker</span>
+        <span class="belt-item">AWS</span>
+        <span class="belt-item">TypeScript</span>
+      </div>
+    </div>
+
+    <!-- CURSOS -->
+    <section id="cursos">
+      <div class="cursos-header fade-in">
+        <div>
+          <span class="section-tag">/ Cursos em destaque</span>
+          <h2 class="section-title">Escolha sua próxima habilidade</h2>
+        </div>
+        <a href="#" class="btn-ghost" style="white-space: nowrap">
+          Ver todos
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path
+              d="M3 8h10M9 4l4 4-4 4"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </a>
+      </div>
+
+      <div class="courses-grid fade-in">
+        <!-- Card 1 -->
+        <div class="course-card card-featured">
+          <div class="card-banner blue"></div>
+          <div class="card-body">
+            <div class="card-icon blue">🐍</div>
+            <div class="card-level">Iniciante → Intermediário</div>
+            <div class="card-title">Python do Zero ao Avançado</div>
+            <div class="card-desc">
+              Fundamentos, estruturas de dados, orientação a objetos, automação
+              e análise de dados com projetos reais.
+            </div>
+            <div class="card-meta">
+              <span>⏱ 48h de conteúdo</span>
+              <span>📹 120 aulas</span>
+              <span>👨‍💻 Projetos práticos</span>
+            </div>
+            <a href="#" class="card-cta">Acessar curso →</a>
+          </div>
+          <span class="badge-new">Popular</span>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="course-card">
+          <div class="card-banner green"></div>
+          <div class="card-body">
+            <div class="card-icon green">⚛️</div>
+            <div class="card-level">Intermediário</div>
+            <div class="card-title">React & TypeScript Moderno</div>
+            <div class="card-desc">
+              Construa interfaces profissionais com React 18, hooks, Context
+              API, Zustand e boas práticas de arquitetura.
+            </div>
+            <div class="card-meta">
+              <span>⏱ 36h de conteúdo</span>
+              <span>📹 95 aulas</span>
+              <span>🚀 3 projetos</span>
+            </div>
+            <a href="#" class="card-cta">Acessar curso →</a>
+          </div>
+          <span class="badge-new">Novo</span>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="course-card">
+          <div class="card-banner red"></div>
+          <div class="card-body">
+            <div class="card-icon red">🗄️</div>
+            <div class="card-level">Iniciante</div>
+            <div class="card-title">Banco de Dados & SQL</div>
+            <div class="card-desc">
+              Modelagem relacional, SQL do básico ao avançado, otimização de
+              queries e introdução a bancos NoSQL.
+            </div>
+            <div class="card-meta">
+              <span>⏱ 24h de conteúdo</span>
+              <span>📹 64 aulas</span>
+              <span>💾 Exercícios reais</span>
+            </div>
+            <a href="#" class="card-cta">Acessar curso →</a>
+          </div>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="course-card">
+          <div class="card-banner blue"></div>
+          <div class="card-body">
+            <div class="card-icon blue">🌐</div>
+            <div class="card-level">Iniciante</div>
+            <div class="card-title">HTML, CSS & JavaScript</div>
+            <div class="card-desc">
+              A base sólida de todo dev web. Semântica, responsividade,
+              animações CSS e JavaScript moderno (ES2024).
+            </div>
+            <div class="card-meta">
+              <span>⏱ 40h de conteúdo</span>
+              <span>📹 108 aulas</span>
+              <span>🎨 5 projetos web</span>
+            </div>
+            <a href="#" class="card-cta">Acessar curso →</a>
+          </div>
+        </div>
+
+        <!-- Card 5 -->
+        <div class="course-card">
+          <div class="card-banner green"></div>
+          <div class="card-body">
+            <div class="card-icon green">☁️</div>
+            <div class="card-level">Avançado</div>
+            <div class="card-title">DevOps & Cloud com AWS</div>
+            <div class="card-desc">
+              Docker, CI/CD, Kubernetes, infraestrutura como código e os
+              principais serviços AWS com labs práticos.
+            </div>
+            <div class="card-meta">
+              <span>⏱ 52h de conteúdo</span>
+              <span>📹 135 aulas</span>
+              <span>☁️ Labs na AWS</span>
+            </div>
+            <a href="#" class="card-cta">Acessar curso →</a>
+          </div>
+        </div>
+
+        <!-- Card 6 -->
+        <div class="course-card">
+          <div class="card-banner red"></div>
+          <div class="card-body">
+            <div class="card-icon red">🤖</div>
+            <div class="card-level">Intermediário → Avançado</div>
+            <div class="card-title">IA & Machine Learning com Python</div>
+            <div class="card-desc">
+              Scikit-learn, TensorFlow, redes neurais, visão computacional e NLP
+              aplicados a casos reais de mercado.
+            </div>
+            <div class="card-meta">
+              <span>⏱ 60h de conteúdo</span>
+              <span>📹 150 aulas</span>
+              <span>🧠 Projetos de IA</span>
+            </div>
+            <a href="#" class="card-cta">Acessar curso →</a>
+          </div>
+          <span class="badge-new" style="background: var(--red)">Quente</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- TRILHAS -->
+    <section id="trilhas">
+      <div class="fade-in">
+        <span class="section-tag">/ Trilhas de aprendizado</span>
+        <h2 class="section-title">Siga um caminho estruturado</h2>
+        <p class="section-sub">
+          Trilhas com sequência ideal de cursos para atingir seus objetivos de
+          carreira.
+        </p>
+      </div>
+
+      <div class="trilhas-grid fade-in">
+        <div class="trilha-card">
+          <div class="trilha-num">01</div>
+          <div class="trilha-content">
+            <h3>Desenvolvedor Full Stack</h3>
+            <p>
+              Do front ao back: construa aplicações completas com React,
+              Node.js, banco de dados e deploy em nuvem.
+            </p>
+            <div class="trilha-tags">
+              <span class="tag">HTML/CSS</span>
+              <span class="tag">JavaScript</span>
+              <span class="tag">React</span>
+              <span class="tag">Node.js</span>
+              <span class="tag">SQL</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="trilha-card">
+          <div class="trilha-num">02</div>
+          <div class="trilha-content">
+            <h3>Cientista de Dados</h3>
+            <p>
+              Análise, visualização de dados, estatística e machine learning
+              para extrair valor de grandes volumes de dados.
+            </p>
+            <div class="trilha-tags">
+              <span class="tag">Python</span>
+              <span class="tag">Pandas</span>
+              <span class="tag">SQL</span>
+              <span class="tag">Scikit-learn</span>
+              <span class="tag">Power BI</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="trilha-card">
+          <div class="trilha-num">03</div>
+          <div class="trilha-content">
+            <h3>Engenheiro DevOps</h3>
+            <p>
+              Automatize, escale e monitore sistemas com pipelines CI/CD,
+              containers e infraestrutura em cloud.
+            </p>
+            <div class="trilha-tags">
+              <span class="tag">Linux</span>
+              <span class="tag">Docker</span>
+              <span class="tag">Kubernetes</span>
+              <span class="tag">Terraform</span>
+              <span class="tag">AWS</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="trilha-card">
+          <div class="trilha-num">04</div>
+          <div class="trilha-content">
+            <h3>Desenvolvedor Mobile</h3>
+            <p>
+              Crie aplicativos nativos para Android e iOS com Flutter e React
+              Native, do protótipo à publicação nas lojas.
+            </p>
+            <div class="trilha-tags">
+              <span class="tag">Dart</span>
+              <span class="tag">Flutter</span>
+              <span class="tag">React Native</span>
+              <span class="tag">Firebase</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- COMO FUNCIONA -->
+    <section id="como-funciona">
+      <div class="fade-in">
+        <span class="section-tag">/ Como funciona</span>
+        <h2 class="section-title">Simples, rápido e eficaz</h2>
+        <p class="section-sub">Quatro passos para transformar sua carreira.</p>
+      </div>
+
+      <div class="steps fade-in">
+        <div class="step">
+          <div class="step-icon">🎯</div>
+          <div class="step-num">01 / Escolha</div>
+          <div class="step-title">Defina seu objetivo</div>
+          <div class="step-desc">
+            Escolha um curso ou trilha alinhado com seus objetivos de carreira e
+            nível atual.
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-icon">📚</div>
+          <div class="step-num">02 / Aprenda</div>
+          <div class="step-title">Estude no seu ritmo</div>
+          <div class="step-desc">
+            Acesse aulas em vídeo, leituras e exercícios interativos quando e
+            onde quiser.
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-icon">🛠️</div>
+          <div class="step-num">03 / Pratique</div>
+          <div class="step-title">Construa projetos reais</div>
+          <div class="step-desc">
+            Cada curso inclui projetos práticos que vão direto para o seu
+            portfólio profissional.
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-icon">🏆</div>
+          <div class="step-num">04 / Conquiste</div>
+          <div class="step-title">Certificado reconhecido</div>
+          <div class="step-desc">
+            Receba seu certificado LEDS e mostre ao mercado sua nova competência
+            técnica.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- DEPOIMENTOS -->
+    <section id="depoimentos">
+      <div class="fade-in" style="text-align: center; margin: 0 auto">
+        <span class="section-tag">/ Depoimentos</span>
+        <h2
+          class="section-title"
+          style="max-width: 100%; text-align: center; margin: 0 auto 8px"
+        >
+          O que dizem nossos alunos
+        </h2>
+        <p class="section-sub" style="max-width: 480px; margin: 0 auto">
+          Histórias reais de pessoas que transformaram suas carreiras.
+        </p>
+      </div>
+
+      <div class="depo-grid fade-in">
+        <div class="depo-card">
+          <div class="depo-stars">★★★★★</div>
+          <div class="depo-text">
+            "Saí de um emprego em outra área direto para desenvolvedor em uma
+            startup. O curso de Python foi decisivo. Conteúdo denso, aulas
+            claras e os projetos fizeram toda a diferença no portfólio."
+          </div>
+          <div class="depo-author">
+            <div class="depo-avatar" style="background: var(--blue)">LM</div>
+            <div>
+              <div class="depo-name">Lucas Menezes</div>
+              <div class="depo-role">Dev Backend • Ex-aluno LEDS</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="depo-card">
+          <div class="depo-stars">★★★★★</div>
+          <div class="depo-text">
+            "Fiz a trilha Full Stack inteira em 8 meses. Hoje trabalho remoto
+            para uma empresa americana. O nível dos projetos é exatamente o que
+            o mercado exige."
+          </div>
+          <div class="depo-author">
+            <div class="depo-avatar" style="background: var(--green)">AS</div>
+            <div>
+              <div class="depo-name">Ana Souza</div>
+              <div class="depo-role">Full Stack Dev • Remote Worker</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="depo-card">
+          <div class="depo-stars">★★★★★</div>
+          <div class="depo-text">
+            "A trilha de Dados me deu a base que faltava. Os monitores são
+            incríveis, sempre disponíveis para tirar dúvidas. Recomendo demais
+            para quem quer migrar para a área de IA."
+          </div>
+          <div class="depo-author">
+            <div class="depo-avatar" style="background: var(--red)">RC</div>
+            <div>
+              <div class="depo-name">Rafael Costa</div>
+              <div class="depo-role">Data Analyst • Fintechlab</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA BANNER -->
+    <div style="padding: 0 0 100px">
+      <div class="cta-banner fade-in">
+        <div class="cta-text">
+          <h2>Pronto para começar sua jornada na programação?</h2>
+          <p>
+            Junte-se a mais de 1.200 alunos que já transformaram suas carreiras
+            com o LEDS.
+          </p>
+        </div>
+        <a href="#cursos" class="btn-white">Explorar cursos →</a>
+      </div>
+    </div>
+
+    <!-- FAQ -->
+    <section id="faq">
+      <div class="fade-in" style="text-align: center">
+        <span class="section-tag">/ FAQ</span>
+        <h2
+          class="section-title"
+          style="max-width: 100%; text-align: center; margin: 0 auto"
+        >
+          Perguntas frequentes
+        </h2>
+      </div>
+
+      <div class="faq-wrap fade-in">
+        <div class="faq-item open">
+          <div class="faq-q">
+            Preciso ter conhecimento prévio para começar?
+            <span class="icon">+</span>
+          </div>
+          <div class="faq-a">
+            Não! Temos cursos para todos os níveis, incluindo opções totalmente
+            do zero. Basta ter disposição para aprender e um computador com
+            acesso à internet.
+          </div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">
+            Os cursos têm certificado? <span class="icon">+</span>
+          </div>
+          <div class="faq-a">
+            Sim. Ao concluir cada curso você recebe um certificado digital
+            emitido pelo LEDS que pode ser compartilhado no LinkedIn e
+            adicionado ao currículo.
+          </div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">
+            Por quanto tempo tenho acesso ao conteúdo?
+            <span class="icon">+</span>
+          </div>
+          <div class="faq-a">
+            O acesso é vitalício! Uma vez matriculado, o conteúdo fica
+            disponível para sempre, incluindo todas as atualizações futuras do
+            curso.
+          </div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">
+            Existe suporte ou mentoria? <span class="icon">+</span>
+          </div>
+          <div class="faq-a">
+            Sim. Todos os cursos contam com fórum de dúvidas monitorado pela
+            equipe LEDS. Alguns planos incluem sessões de mentoria ao vivo com
+            profissionais da área.
+          </div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">
+            Posso acessar pelo celular? <span class="icon">+</span>
+          </div>
+          <div class="faq-a">
+            Sim, nossa plataforma é totalmente responsiva. Você pode acessar
+            aulas e exercícios pelo celular, tablet ou computador, sem instalar
+            nada.
+          </div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">
+            Existe garantia de reembolso? <span class="icon">+</span>
+          </div>
+          <div class="faq-a">
+            Oferecemos garantia de 7 dias. Se não estiver satisfeito pelos
+            qualquer motivo, devolvemos 100% do valor pago sem burocracia.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <img src="/mnt/user-data/uploads/logo_leds_2.jpg" alt="LEDS" />
+          <p>
+            Laboratório de Extensão em Desenvolvimento de Soluções. Educação em
+            tecnologia com foco em prática e resultados reais.
+          </p>
+        </div>
+        <div class="footer-col">
+          <h4>Cursos</h4>
+          <ul>
+            <li><a href="#">Python</a></li>
+            <li><a href="#">JavaScript</a></li>
+            <li><a href="#">React</a></li>
+            <li><a href="#">Java</a></li>
+            <li><a href="#">SQL & Dados</a></li>
+            <li><a href="#">DevOps</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Trilhas</h4>
+          <ul>
+            <li><a href="#">Full Stack</a></li>
+            <li><a href="#">Ciência de Dados</a></li>
+            <li><a href="#">DevOps</a></li>
+            <li><a href="#">Mobile</a></li>
+            <li><a href="#">IA & ML</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Institucional</h4>
+          <ul>
+            <li><a href="#">Sobre o LEDS</a></li>
+            <li><a href="#">Blog</a></li>
+            <li><a href="#">Instrutores</a></li>
+            <li><a href="#">Parcerias</a></li>
+            <li><a href="#">Contato</a></li>
+            <li><a href="#">Política de Privacidade</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <span
+          >© 2025 LEDS — Laboratório de Extensão em Desenvolvimento de Soluções.
+          Todos os direitos reservados.</span
+        >
+        <div class="footer-social">
+          <a href="#" class="social-btn">in</a>
+          <a href="#" class="social-btn">gh</a>
+          <a href="#" class="social-btn">ig</a>
+          <a href="#" class="social-btn">yt</a>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      // Intersection Observer for fade-in
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((e) => {
+            if (e.isIntersecting) {
+              e.target.classList.add("visible");
+              observer.unobserve(e.target);
+            }
+          });
+        },
+        { threshold: 0.1 }
+      );
+      document
+        .querySelectorAll(".fade-in")
+        .forEach((el) => observer.observe(el));
+
+      // FAQ accordion
+      document.querySelectorAll(".faq-q").forEach((q) => {
+        q.addEventListener("click", () => {
+          const item = q.parentElement;
+          const isOpen = item.classList.contains("open");
+          document
+            .querySelectorAll(".faq-item")
+            .forEach((i) => i.classList.remove("open"));
+          if (!isOpen) item.classList.add("open");
+        });
+      });
+
+      // Smooth active nav highlight
+      const sections = document.querySelectorAll("section[id]");
+      const navLinks = document.querySelectorAll(".nav-links a");
+      window.addEventListener("scroll", () => {
+        let current = "";
+        sections.forEach((s) => {
+          if (window.scrollY >= s.offsetTop - 120) current = s.id;
+        });
+        navLinks.forEach((a) => {
+          a.style.color =
+            a.getAttribute("href") === "#" + current ? "var(--white)" : "";
+        });
+      });
+    </script>
+  </body>
+</html>
