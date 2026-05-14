@@ -302,6 +302,17 @@
         letter-spacing: 0.03em;
       }
 
+      .h1-img-hero-wrapper {
+        display: flex;
+        justify-content: space-evenly;
+        gap: 5rem;
+      }
+
+      .img-main-hero {
+        width: 100%;
+        max-width: 30rem;
+      }
+
       /* ── LOGOS BELT ── */
       .belt {
         border-top: 1px solid var(--border);
@@ -1028,12 +1039,19 @@
       <div class="orb-red"></div>
 
       <div class="hero-label"><span></span> Novas turmas abertas — 2026</div>
+      <div class="h1-img-hero-wrapper">
+        <h1>
+          Aprenda a<br />
+          <span class="accent-blue">programar</span> de<br />
+          verdade<span class="accent-green">.</span>
+        </h1>
 
-      <h1>
-        Aprenda a<br />
-        <span class="accent-blue">programar</span> de<br />
-        verdade.<span class="accent-green">_</span>
-      </h1>
+        <img
+          class="img-main-hero"
+          src="/assets/imagemProgramador.jpg"
+          alt="Imagem de um programador"
+        />
+      </div>
 
       <p class="hero-sub">
         Cursos práticos e orientados a projetos reais. Do zero à carreira, com
